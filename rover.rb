@@ -59,14 +59,16 @@ def report_position(rover)
   puts "The rover is now at #{rover.x}, #{rover.y} heading #{rover.heading}."
 end
 
+def run_commands
+  rover = add_rover
+  get_instructions(rover)
+  report_position(rover)
+end
+
+
 #Not used in code yet so gets is called but nothing stored yet.
 puts "How big is the plateau?  ___ by ___? (Please enter the numbers like this: 5 5)."
 gets.chomp.split
 
-rover1 = add_rover
-get_instructions(rover1)
-report_position(rover1)
-
-rover2 = add_rover
-get_instructions(rover2)
-report_position(rover2)
+run_commands
+run_commands
