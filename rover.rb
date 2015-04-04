@@ -8,37 +8,26 @@ class Rover
   end
 
   #The SW corner of the grid is 0,0
-  def move
-    case @heading
-      when 'N'
-        @y += 1
-      when 'S'
-        @y -= 1
-      when 'E'
-        @x += 1
-      when 'W'
-        @x -= 1
-      end
-  end
-
-  #Heading changes with direction as assignment by increment/decrement from array of values
-  def turn(direction)
-    compass_points = ['N', 'E', 'S', 'W']
-    if direction == 'R' && @heading == 'W'
-      @heading = 'N'
-    elsif direction == 'R'
-      @heading = compass_points[compass_points.index(@heading) + 1]
-    else
-      @heading = compass_points[compass_points.index(@heading) - 1]
-    end
+  def move(requester)
+    @x = requester.check_x
+    @y = requester.check_y
+    @heading = requester.check_heading
   end
 end
 
+#   #Heading changes with direction as assignment by increment/decrement from array of values
+#   def turn
+#       @heading = @check_heading
+#   end
+# end
+
 #MissionControl is responsible for assigning and ordering rovers around
 class MissionControl
-
-  def initialize
-    2.times{run_rover_commands}
+  attr_reader :check_x, :check_y, :check_heading
+  def initialize(plateau)
+    @plateau = plateau
+    puts "Welcome to Mission Control.  How many rovers would you like to deploy?"
+    gets.chomp.to_i.times{run_rover_commands}
   end
 
   def add_rover
@@ -48,27 +37,59 @@ class MissionControl
 
   def get_instructions(rover)
     puts "Where would you like the rover to move? Enter L for left, R for right and M for forward in the current heading i.e. LMMMMRMMMRMMMLM"
-    read_instruction(rover, gets.chomp.upcase.split(""))
+    set_of_instructions = gets.chomp.upcase.split("")
+    read_instructions(rover, set_of_instructions)
   end
 
-  def read_instruction(rover, set_of_instructions)
+  def read_instructions(rover, set_of_instructions)
+    @check_x, @check_y, @check_heading = rover.x, rover.y, rover.heading #check_variables allow for a check if proposed route will cause issues without changing original position.""
     set_of_instructions.each do |instruction|
       if instruction == 'M'
-        rover.move
+        check_location
+        if @plateau.fall?(self)
+          puts "These instructions would make the rover fall off the plateau.  Please provide new instructions."
+          get_instructions(rover)
+          break
+        end
       else
-        rover.turn(instruction)
+        track_heading(instruction)
       end
+    end
+    rover.move(self)
+  end
+
+    def check_location
+    case @check_heading
+      when 'N'
+        @check_y += 1
+      when 'S'
+        @check_y -= 1
+      when 'E'
+        @check_x += 1
+      when 'W'
+        @check_x -= 1
     end
   end
 
-  def report_position(rover)
-    puts "The rover is now at #{rover.x}, #{rover.y} heading #{rover.heading}."
+  #Heading changes with direction as assignment by increment/decrement from array of values.  Allows us to keep track of heading as we check if instructions are valid.
+  def track_heading(direction)
+    compass_points = ['N', 'E', 'S', 'W']
+    p @check_heading
+    p compass_points.index(@check_heading)
+
+    if direction == 'R' && @check_heading == 'W'
+      @check_heading = 'N'
+    elsif direction == 'R'
+      @check_heading = compass_points[(compass_points.index(@check_heading) + 1)]
+    else
+      @check_heading = compass_points[(compass_points.index(@check_heading) - 1)]
+    end
   end
 
   def run_rover_commands
     rover = add_rover
     get_instructions(rover)
-    report_position(rover)
+    puts "The rover is now at #{rover.x}, #{rover.y} heading #{rover.heading}."
   end
 end
 
@@ -79,7 +100,12 @@ class Plateau
     @max_x = size[0].to_i
     @max_y = size[1].to_i
   end
+
+  def fall?(requester)
+    requester.check_x > @max_x || requester.check_y > @max_y
+  end
 end
 
-Plateau.new
-MissionControl.new
+
+tharsis = Plateau.new
+nasa = MissionControl.new(tharsis)
