@@ -34,41 +34,46 @@ class Rover
   end
 end
 
-#Accept instruction and decide whether to tell rover to turn or move
-def add_rover
-  puts "What is the rover's position?  (0,0) is the lower left (SW corner) of the plateau.  Please enter as its x and y coordinates and heading with spaces i.e. 5 5 N"
-  Rover.new(gets.chomp.upcase.split)
-end
+#MissionControl is responsible for assigning and ordering rovers around
+class MissionControl
 
-def get_instructions(rover)
-  puts "Where would you like the rover to move? Enter L for left, R for right and M for forward in the current heading i.e. LMMMMRMMMRMMMLM"
-  read_instruction(rover, gets.chomp.upcase.split(""))
-end
+  def initialize
+    2.times{run_rover_commands}
+  end
 
-def read_instruction(rover, set_of_instructions)
-  set_of_instructions.each do |instruction|
-    if instruction == 'M'
-      rover.move
-    else
-      rover.turn(instruction)
+  def add_rover
+    puts "What is the rover's position?  (0,0) is the lower left (SW corner) of the plateau.  Please enter as its x and y coordinates and heading with spaces i.e. 5 5 N"
+    Rover.new(gets.chomp.upcase.split)
+  end
+
+  def get_instructions(rover)
+    puts "Where would you like the rover to move? Enter L for left, R for right and M for forward in the current heading i.e. LMMMMRMMMRMMMLM"
+    read_instruction(rover, gets.chomp.upcase.split(""))
+  end
+
+  def read_instruction(rover, set_of_instructions)
+    set_of_instructions.each do |instruction|
+      if instruction == 'M'
+        rover.move
+      else
+        rover.turn(instruction)
+      end
     end
   end
-end
 
-def report_position(rover)
-  puts "The rover is now at #{rover.x}, #{rover.y} heading #{rover.heading}."
-end
+  def report_position(rover)
+    puts "The rover is now at #{rover.x}, #{rover.y} heading #{rover.heading}."
+  end
 
-def run_commands
-  rover = add_rover
-  get_instructions(rover)
-  report_position(rover)
+  def run_rover_commands
+    rover = add_rover
+    get_instructions(rover)
+    report_position(rover)
+  end
 end
-
 
 #Not used in code yet so gets is called but nothing stored yet.
 puts "How big is the plateau?  ___ by ___? (Please enter the numbers like this: 5 5)."
 gets.chomp.split
 
-run_commands
-run_commands
+MissionControl.new
