@@ -40,3 +40,7 @@ def read_instruction(instruction)
     rover.turn(direction)
   end
 end
+
+#Prompt for plateau size as first line of input.  Not used in code yet so gets is called but nothing stored yet.
+puts "How big is the #{plateau_name} plateau?  ___ by ___? (Please enter the numbers like this: 5 5)."
+gets.chomp.split
