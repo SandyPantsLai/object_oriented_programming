@@ -35,6 +35,16 @@ class Rover
 end
 
 #Accept instruction and decide whether to tell rover to turn or move
+def add_rover
+  puts "What is the rover's position?  (0,0) is the lower left (SW corner) of the plateau.  Please enter as its x and y coordinates and heading with spaces i.e. 5 5 N"
+  Rover.new(gets.chomp.upcase.split)
+end
+
+def get_instructions(rover)
+  puts "Where would you like the rover to move? Enter L for left, R for right and M for forward in the current heading i.e. LMMMMRMMMRMMMLM"
+  read_instruction(rover, gets.chomp.upcase.split(""))
+end
+
 def read_instruction(rover, set_of_instructions)
   set_of_instructions.each do |instruction|
     if instruction == 'M'
@@ -45,20 +55,18 @@ def read_instruction(rover, set_of_instructions)
   end
 end
 
-#Report final position of rover
 def report_position(rover)
   puts "The rover is now at #{rover.x}, #{rover.y} heading #{rover.heading}."
 end
 
-#Prompt for plateau size as first line of input.  Not used in code yet so gets is called but nothing stored yet.
+#Not used in code yet so gets is called but nothing stored yet.
 puts "How big is the plateau?  ___ by ___? (Please enter the numbers like this: 5 5)."
 gets.chomp.split
 
-#Get starting position to create rover instance
-puts "What is Rover 1's position?  (0,0) is the lower left (SW corner) of the plateau.  Please enter as its x and y coordinates and heading with spaces i.e. 5 5 N"
-rover1 = Rover.new(gets.chomp.upcase.split)
-
-#Get set of instructions from user
-puts "Where would you like the rover to move? Enter L for left, R for right and M for forward in the current heading i.e. LMMMMRMMMRMMMLM"
-read_instruction(rover1, gets.chomp.upcase.split(""))
+rover1 = add_rover
+get_instructions(rover1)
 report_position(rover1)
+
+rover2 = add_rover
+get_instructions(rover2)
+report_position(rover2)
