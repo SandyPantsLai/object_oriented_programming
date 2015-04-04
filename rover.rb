@@ -72,8 +72,14 @@ class MissionControl
   end
 end
 
-#Not used in code yet so gets is called but nothing stored yet.
-puts "How big is the plateau?  ___ by ___? (Please enter the numbers like this: 5 5)."
-gets.chomp.split
+class Plateau
+  def initialize
+    puts "How big is the plateau?  ___ by ___? (Please enter the numbers like this: 5 5)."
+    size = gets.chomp.split
+    @max_x = size[0].to_i
+    @max_y = size[1].to_i
+  end
+end
 
+Plateau.new
 MissionControl.new
