@@ -1,4 +1,5 @@
 class Rover
+  attr_reader :x, :y, :heading
 
   def initialize(position) #Array created from split of user input
     @x = position[0].to_i
@@ -44,7 +45,10 @@ def read_instruction(rover, set_of_instructions)
   end
 end
 
-#Splits
+#Report final position of rover
+def report_position(rover)
+  puts "The rover is now at #{rover.x}, #{rover.y} heading #{rover.heading}."
+end
 
 #Prompt for plateau size as first line of input.  Not used in code yet so gets is called but nothing stored yet.
 puts "How big is the plateau?  ___ by ___? (Please enter the numbers like this: 5 5)."
@@ -57,3 +61,4 @@ rover1 = Rover.new(gets.chomp.upcase.split)
 #Get set of instructions from user
 puts "Where would you like the rover to move? Enter L for left, R for right and M for forward in the current heading i.e. LMMMMRMMMRMMMLM"
 read_instruction(rover1, gets.chomp.upcase.split(""))
+report_position(rover1)
