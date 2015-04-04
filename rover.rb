@@ -6,3 +6,12 @@ class Rover
     @heading = heading
   end
 end
+
+#Accept instruction and decide whether to tell rover to turn or move
+def read_instruction(instruction)
+  if instruction == 'M'
+    rover.move
+  else
+    rover.turn(direction)
+  end
+end
