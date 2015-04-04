@@ -27,3 +27,7 @@ instructor.greet
 
 student = Student.new("Cristina")
 student.greet
+
+instructor.teach
+student.learn
+#student.teach would not work as it is in instance method for instructor.  student has no access to this method.
