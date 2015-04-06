@@ -21,7 +21,9 @@ class Shopper
         @shopping_cart.list_of_items = [[{:item_name => "box of chocolates", :unit_cost => 10.00, :tax_rate => "import only"}, 1], [{:item_name => "bottle of perfume", :unit_cost => 47.50, :tax_rate => "import and basic"}, 1]]
       when "3"
         @shopping_cart.list_of_items = [[{:item_name => "bottle of perfume", :unit_cost => 27.99, :tax_rate => "import and basic"}, 1], [{:item_name => "bottle of perfume", :unit_cost => 18.99, :tax_rate => "basic"}, 1], [{:item_name => "packet of headache pills", :unit_cost => 9.75}, 1], [{:item_name => "box of chocolates", :unit_cost => 11.25, :tax_rate => "import only"}, 1]]
-      else puts "Invalid choice."
+      else
+        puts "Invalid choice.  Please try again later."
+        exit
     end
     checkout
   end
