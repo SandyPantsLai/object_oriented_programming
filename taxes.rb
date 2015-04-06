@@ -8,72 +8,26 @@ IMPORT_DUTY_TAX = BigDecimal('0.05')
 class Shopper
   def initialize
     @shopping_cart = ShoppingCart.new
-    puts "Welcome to the Bitmaker Replicatorium."
-    shopping_choice
+    puts "Welcome to the Bitmaker Replicatorium.  Please select your order number to complete checkout."
+    load_order
   end
 
-  #Gets input from shopper and decides what to do next
-  def shopping_choice
-    puts " Please press [1] to replicate your own item, [2] to replicate one from our catalog, [3] to load your previous order or [4] to view your cart and complete checkout.\n"
+  def load_order
+    puts "There are 3 orders stored in the system.  Please enter your order number (1, 2 or 3)"
     case gets.chomp
-      when "1" then add_own_item
-      when "2" then add_from_catalog
-      when "3" then load_previous_order
-      when "4" then checkout
+      when "1"
+        @shopping_cart.list_of_items = [[{:item_name => "book", :unit_cost => 12.49}, 1], [{:item_name => "music CD", :unit_cost => 14.99, :tax_rate => "basic"}, 1], [{:item_name => "chocolate_bar", :unit_cost => 0.85}, 1]]
+      when "2"
+        @shopping_cart.list_of_items = [[{:item_name => "box of chocolates", :unit_cost => 10.00, :tax_rate => "import only"}, 1], [{:item_name => "bottle of perfume", :unit_cost => 47.50, :tax_rate => "import and basic"}, 1]]
+      when "3"
+        @shopping_cart.list_of_items = [[{:item_name => "bottle of perfume", :unit_cost => 27.99, :tax_rate => "import and basic"}, 1], [{:item_name => "bottle of perfume", :unit_cost => 18.99, :tax_rate => "basic"}, 1], [{:item_name => "packet of headache pills", :unit_cost => 9.75}, 1], [{:item_name => "box of chocolates", :unit_cost => 11.25, :tax_rate => "import only"}, 1]]
       else puts "Invalid choice."
     end
-    shopping_choice
-  end
-
-  def add_own_item
-    puts "Choose an item to replicate or enter your own item."
-    add_item_to_catalog(item)
-    @shopping_cart.list_of_items << [item, quantity]
-  end
-
-  def add_from_catalog
-    puts "Please select a category.  [1] for Books and Music, [2] for Food or [3] for Health and Beauty"
-    add_from_category(gets.chomp)
-  end
-
-  def add_from_category(choice)
-    p @shopping_cart.list_of_items
-    books_and_music_list = [{:item_name => "book", :unit_cost => 12.49}, {:item_name => "music CD", :unit_cost => 14.99, :tax_rate => "basic"}]
-    food_list = [{:item_name => "chocolate_bar", :unit_cost => 0.85},{:item_name => "box of chocolates", :unit_cost => 10.00, :tax_rate => "import only"}]
-    health_and_beauty_list = [{:item_name => "bottle of perfume", :unit_cost => 47.50, :tax_rate => "import + basic"}]
-
-    case choice
-      when "1" then list = books_and_music_list
-      when "2" then list = food_list
-      when "3" then list = health_and_beauty_list
-    end
-
-    item_number = 1
-
-    list.each do |item|
-      puts "[#{item_number}] #{item[:item_name]}: $#{item[:unit_cost]}"
-      item_number += 1
-    end
-
-    puts "What would you like to add?"
-    item = list[gets.chomp.to_i - 1]
-    puts "How many would you like?"
-    quantity = gets.chomp.to_i
-    @shopping_cart.list_of_items.push([item, quantity])
-    p @shopping_cart.list_of_items
-  end
-
-  def add_item_to_shopping_cart(item)
-    @shopping_cart.list_of_items << [item, quantity]
-  end
-
-  def load_previous_order
-    @shopping_cart.list_of_items ||= [[{:item_name => "book", :unit_cost => 12.49}, 1], [{:item_name => "music CD", :unit_cost => 14.99, :tax_rate => "basic"}, 1], [{:item_name => "chocolate_bar", :unit_cost => 0.85}, 1]]
+    checkout
   end
 
   def checkout
     Checkout.new(@shopping_cart)
-
   end
 end
 
@@ -81,7 +35,7 @@ end
 class ShoppingCart
   attr_accessor :list_of_items
   def initialize
-    @list_of_items = []
+    list_of_items = []
     @subtotal = 0
     @total_taxes = 0
   end
@@ -125,7 +79,6 @@ class Checkout
   end
 
   def display_cart(list)
-    p list
     puts "----------Your Cart-----------"
     list.each do |entry|
       item = entry[0]
