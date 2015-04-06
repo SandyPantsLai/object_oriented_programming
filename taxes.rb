@@ -8,7 +8,7 @@ IMPORT_DUTY_TAX = BigDecimal('0.05')
 class Shopper
   def initialize
     @shopping_cart = ShoppingCart.new
-    puts "Welcome to the Bitmaker Replicatorium.  Please select your order number to complete checkout."
+    puts "Please select your order number to complete checkout.\n"
     load_order
   end
 
@@ -47,18 +47,18 @@ class ShoppingCart
   def calculate_item_tax(item_subtotal, tax_rate = nil)
     item_sub_total = BigDecimal(item_subtotal.to_d)
     if tax_rate == "import and basic"
-      ((item_subtotal * BASIC_TAX_RATE) + (item_subtotal * IMPORT_DUTY_TAX)).round(2).to_f
+      ((item_subtotal * BASIC_TAX_RATE) + (item_subtotal * IMPORT_DUTY_TAX)).ceil(2).to_f
     elsif tax_rate == "basic"
-      (item_subtotal * BASIC_TAX_RATE).round(2).to_f
+      (item_subtotal * BASIC_TAX_RATE).ceil(2).to_f
     elsif tax_rate == "import only"
-      (item_subtotal * IMPORT_DUTY_TAX).round(2).to_f
+      (item_subtotal * IMPORT_DUTY_TAX).ceil(2).to_f
     else 0
     end
   end
 
   def add_to_totals(item_subtotal, item_tax)
     @subtotal += item_subtotal
-    @total_taxes += item_tax
+    @total_taxes += (item_tax * 20).ceil / 20.0 #total taxes are rounded up to nearest $0.05
   end
 
   def return_totals
