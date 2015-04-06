@@ -27,11 +27,40 @@ class Shopper
 
   def add_own_item
     puts "Choose an item to replicate or enter your own item."
-    add_item_to_shopping_cart
+    add_item_to_catalog(item)
+    @shopping_cart.list_of_items << [item, quantity]
   end
 
   def add_from_catalog
-    add_item_to_shopping_cart(item)
+    puts "Please select a category.  [1] for Books and Music, [2] for Food or [3] for Health and Beauty"
+    add_from_category(gets.chomp)
+  end
+
+  def add_from_category(choice)
+    p @shopping_cart.list_of_items
+    books_and_music_list = [{:item_name => "book", :unit_cost => 12.49}, {:item_name => "music CD", :unit_cost => 14.99, :tax_rate => "basic"}]
+    food_list = [{:item_name => "chocolate_bar", :unit_cost => 0.85},{:item_name => "box of chocolates", :unit_cost => 10.00, :tax_rate => "import only"}]
+    health_and_beauty_list = [{:item_name => "bottle of perfume", :unit_cost => 47.50, :tax_rate => "import + basic"}]
+
+    case choice
+      when "1" then list = books_and_music_list
+      when "2" then list = food_list
+      when "3" then list = health_and_beauty_list
+    end
+
+    item_number = 1
+
+    list.each do |item|
+      puts "[#{item_number}] #{item[:item_name]}: $#{item[:unit_cost]}"
+      item_number += 1
+    end
+
+    puts "What would you like to add?"
+    item = list[gets.chomp.to_i - 1]
+    puts "How many would you like?"
+    quantity = gets.chomp.to_i
+    @shopping_cart.list_of_items.push([item, quantity])
+    p @shopping_cart.list_of_items
   end
 
   def add_item_to_shopping_cart(item)
@@ -52,7 +81,7 @@ end
 class ShoppingCart
   attr_accessor :list_of_items
   def initialize
-    list_of_items = []
+    @list_of_items = []
     @subtotal = 0
     @total_taxes = 0
   end
@@ -67,7 +96,7 @@ class ShoppingCart
       ((item_subtotal * BASIC_TAX_RATE) + (item_subtotal * IMPORT_DUTY_TAX)).round(2).to_f
     elsif tax_rate == "basic"
       (item_subtotal * BASIC_TAX_RATE).round(2).to_f
-    elsif tax_rate == "import"
+    elsif tax_rate == "import only"
       (item_subtotal * IMPORT_DUTY_TAX).round(2).to_f
     else 0
     end
@@ -96,6 +125,7 @@ class Checkout
   end
 
   def display_cart(list)
+    p list
     puts "----------Your Cart-----------"
     list.each do |entry|
       item = entry[0]
